@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: microservice-item
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:admin@127.0.0.1:6868/eureka/   # 注册到多个eureka服务时在这里用 ‘，’ 分割
+  instance:
+    prefer-ip-address: true
+#    instance-id: abc         # 手动指定实例id
+#    ip-address: 127.0.0.1    # 手动指定注册ip
