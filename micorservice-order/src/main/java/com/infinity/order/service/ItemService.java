@@ -2,7 +2,9 @@ package com.infinity.order.service;
 
 import com.infinity.order.feign.ItemFeignClient;
 import com.infinity.order.pojo.Item;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -12,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
+//@DefaultProperties(defaultFallback = "defalut")
 public class ItemService {
 
     @Autowired
@@ -23,8 +26,15 @@ public class ItemService {
     @Autowired
     private ItemFeignClient itemFeignClient;
 
-    @HystrixCommand(fallbackMethod = "abc")
+    @HystrixCommand(fallbackMethod = "abc", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+    })
     public Item queryItemById(Long id) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return itemFeignClient.queryBuItemId(id);
     }
 
